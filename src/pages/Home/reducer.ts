@@ -13,6 +13,7 @@ import {
 
 export const initialState = {
   list: {},
+  count: 0,
   error: false,
   success: false,
   loading: false,
@@ -30,17 +31,18 @@ const homeReducer = (state = initialState, action) =>
         // of replacing the list with results from API, we would append new
         // data into existing one. To avoid having duplicate entries array
         // is converted to object.
-        const movies = action.payload.movies.Search.reduce((obj, item) => {
+        const movies = action.payload.movies.reduce((obj, item) => {
           obj[item.imdbID] = item;
           return obj;
         }, {});
         draft.list = Object.assign({}, state.list, movies);
+        draft.count = action.payload.count;
         draft.success = true;
         draft.loading = false;
         draft.error = false;
         break;
       case LOAD_MOVIES_FAILED:
-        draft.error = action.payload.error;
+        draft.error = action.payload;
         draft.success = false;
         draft.loading = false;
         break;

@@ -46,6 +46,30 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  error: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'red'
+  },
+  paginationContainer: {
+    padding: 8,
+    marginVertical: 8,
+    marginHorizontal: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  paginationLeft: {
+    flex: 1,
+    alignItems: 'flex-start',
+  }, 
+  paginationCurrent: {
+    flex: 1,
+    alignItems: 'center',
+  }, 
+  paginationRight: {
+    flex: 1,
+    alignItems: 'flex-end',
+  }, 
 });
 
 export default styles;

@@ -1,9 +1,10 @@
-export function filterMoviesList(list, query) {
+import type {Movie} from './types';
+
+export function filterMoviesList(list: Movie[], query: string, page: number) {
   if (!query) return list;
-  const queryLowerCase = query.toLowerCase();
+  if (!list.length) return [];
   return list.filter((item) => {
-    const types = (item.types || []).map((i) => i.toLowerCase());
-    const name = item.name.toLowerCase();
-    return name.includes(queryLowerCase) || types.includes(queryLowerCase);
+    if(!item.Title) return false;
+    return item.Title.toLowerCase().includes(query.toLowerCase()) && item.page === page;
   });
 }

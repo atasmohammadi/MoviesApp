@@ -6,7 +6,11 @@ import {LOAD_MOVIES} from './constants';
 
 import {loadMoviesFailed, loadMoviesSuccess} from './actions';
 
-function* loadMovies({payload: {query, page}}: { payload: { query: string, page: number }}) {
+function* loadMovies({
+  payload: {query, page},
+}: {
+  payload: {query: string; page: number};
+}) {
   const options = {
     method: 'GET',
     headers: {
@@ -15,12 +19,19 @@ function* loadMovies({payload: {query, page}}: { payload: { query: string, page:
   };
   const requestURL = `${baseUrl}&s=${query}&page=${page}`;
   try {
-    const {data} = yield call(request, requestURL, options);
-    console.log('Yoo', data)
-    // if (!Boolean(data.Response)) throw error(data.Error)
-    yield put(loadMoviesSuccess(data));
+    const {
+      data: {Response, Error, totalResults, Search},
+    } = yield call(request, requestURL, options);
+    if (Error) throw Error;
+    const results =
+      Array.isArray(Search) && Search.length
+        ? Search.map((i) => {
+            i.page = page;
+            return i;
+          })
+        : [];
+    yield put(loadMoviesSuccess(results, totalResults));
   } catch (error) {
-    console.log('Catching erorr', error)
     yield put(loadMoviesFailed(error));
   }
 }

@@ -13,13 +13,14 @@ import styles from './styles';
 import {
   makeSelectLoading,
   makeSelectList,
+  makeSelectCount,
   makeSelectError,
   makeSelectSuccess,
 } from './selectors';
 import saga from './saga';
 
 function Home(props: HomeScreenPropsType): React.ReactNode {
-  const { loadMovies, movies } = props;
+  const { loadMovies, movies, error, count } = props;
   useInjectSaga({ key: 'Home', saga });
   const [searchQuery, updateSearchQuery] = React.useState('');
   const [page, updatePage] = React.useState(1);
@@ -31,7 +32,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
 
   // Re-load movies when search query changes
   React.useEffect(() => {
-    if (!searchQuery) return;
+    if (!searchQuery || searchQuery.length < 3) return;
     loadMovies(searchQuery.toLowerCase(), page);
   }, [searchQuery]);
 
@@ -41,8 +42,13 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
     loadMovies(searchQuery.toLowerCase(), page);
   }, [page]);
 
+  const moviesArray = Object.values(movies)
+  const filteredMoviesArray = filterMoviesList(moviesArray, searchQuery, page);
+  const itemPerPage = 10;
+  const lastPageNumber = Math.ceil(count / itemPerPage);
+
   function nextPage() {
-    updatePage(page + 1)
+    updatePage(page + 1);
   }
 
   // Render list item ( movie )
@@ -70,11 +76,33 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
               <Text style={styles.desc}>{item.Year}</Text>
             </View>
           )}
+          {item.Type && (
+            <View style={styles.row}>
+              <Text style={styles.title}>Type: </Text>
+              <Text style={styles.desc}>{item.Type}</Text>
+            </View>
+          )}
         </View>
       </View>
     );
   }
-  const filteredMoviesArray = filterMoviesList(Object.values(movies), searchQuery);
+
+  function pagination() {
+    if(!searchQuery || searchQuery.length < 3) return;
+    return (
+      <View style={styles.paginationContainer}>
+            <View style={styles.paginationLeft}>
+              {page > 1 && <Text style={styles.error}>Previous</Text>}
+            </View>
+            <View style={styles.paginationCurrent}>
+              <Text style={styles.error}>{page}</Text>
+            </View>
+            <View style={styles.paginationRight}>
+              {page < lastPageNumber && <Text style={styles.error}>Next</Text>}
+            </View>
+        </View>
+    );
+  }
 
   return (
     <>
@@ -84,12 +112,14 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
           onChangeText={updateSearchQuery}
           value={searchQuery}
         />
+        {/* {error && <Text style={styles.error}>Error: {error}</Text>} */}
         <FlatList
           data={filteredMoviesArray}
           renderItem={renderItem}
           keyExtractor={(item) => item.imdbID}
           extraData={filteredMoviesArray}
         />
+        {pagination()}
       </SafeAreaView>
     </>
   );
@@ -97,6 +127,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
 
 const mapStateToProps = createStructuredSelector({
   movies: makeSelectList(),
+  count: makeSelectCount(),
   loading: makeSelectLoading(),
   error: makeSelectError(),
   success: makeSelectSuccess(),

@@ -1,55 +1,44 @@
-import { createSelector } from 'reselect';
-import { initialState } from './reducer';
+import {createSelector} from 'reselect';
+import {initialState} from './reducer';
 
 /**
  * Direct selector to the Home state domain
  */
 
-const selectHomeDomain = state => state.home || initialState;
+const selectHomeDomain = (state) => state.home || initialState;
 
 /**
  * Other specific selectors
  */
 
- const makeSelectLoading = () =>
-  createSelector(
-    selectHomeDomain,
-    subState => subState.loading,
-  );
+const makeSelectLoading = () =>
+  createSelector(selectHomeDomain, (subState) => subState.loading);
 
 const makeSelectList = () =>
-  createSelector(
-    selectHomeDomain,
-    subState => subState.list,
-  );
+  createSelector(selectHomeDomain, (subState) => subState.list);
+
+const makeSelectCount = () =>
+  createSelector(selectHomeDomain, (subState) => subState.count);
 
 const makeSelectError = () =>
-  createSelector(
-    selectHomeDomain,
-    subState => subState.error,
-  );
+  createSelector(selectHomeDomain, (subState) => subState.error);
 
 const makeSelectSuccess = () =>
-  createSelector(
-    selectHomeDomain,
-    subState => subState.success,
-  );
+  createSelector(selectHomeDomain, (subState) => subState.success);
 
 /**
  * Default selector used by Home
  */
 
 const makeSelectHome = () =>
-  createSelector(
-    selectHomeDomain,
-    subState => subState,
-  );
+  createSelector(selectHomeDomain, (subState) => subState);
 
 export default makeSelectHome;
 export {
   selectHomeDomain,
   makeSelectLoading,
   makeSelectList,
+  makeSelectCount,
   makeSelectError,
   makeSelectSuccess,
 };

@@ -17,9 +17,9 @@ export const loadMovies = (query: string, page: number) => ({
   payload: {query, page},
 });
 
-export const loadMoviesSuccess = (movies: Movie[]) => ({
+export const loadMoviesSuccess = (movies: Movie[], count: number) => ({
   type: LOAD_MOVIES_SUCCESS,
-  payload: {movies},
+  payload: {movies, count},
 });
 
 export const loadMoviesFailed = (error: string) => ({

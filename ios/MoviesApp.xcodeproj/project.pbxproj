@@ -194,7 +194,6 @@
 				A4177279582868586223831E /* Pods-MoviesApp-tvOSTests.debug.xcconfig */,
 				CAE763AE92DE720E7CDB6193 /* Pods-MoviesApp-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -375,7 +374,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2857710A3993BFA78C094C6E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

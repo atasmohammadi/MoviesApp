@@ -34,6 +34,16 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
     return arr;
   }, []);
 
+  const shouldShowPreviousButton = page > 1;
+  // If search query is set, we can fetch more pages since we know the query
+  // but if query is not set (e.g. persisted data) only show next page button
+  // if we have the next page in cache
+  const shouldShowNextButton = searchQuery ? page < lastPageNumber : fetchedPages.includes(page + 1);
+
+  // following code is commented out, because there is
+  // no query to fetch movies. API doesn't support listing
+  // all movies. we can only search
+  
   // Load movies when component mounts
   // React.useEffect(() => {
   //   loadMovies();
@@ -48,6 +58,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
 
   // Re-load movies when page number changes
   React.useEffect(() => {
+    // if we have the page already in cache, don't re-fetch
     if (!searchQuery || fetchedPages.includes(page)) return;
     loadMovies(searchQuery.toLowerCase(), page);
   }, [page]);
@@ -97,11 +108,10 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   }
 
   function pagination() {
-    if(!searchQuery || searchQuery.length < 3) return <View style={styles.paginationContainer} />;
     return (
       <View style={styles.paginationContainer}>
             <View style={styles.paginationLeft}>
-              {page > 1 && <Button
+              {shouldShowPreviousButton && <Button
                   title="Previous"
                   onPress={previousPage}
                 />}
@@ -110,7 +120,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
               <Text style={styles.currentPage}>{page}</Text>
             </View>
             <View style={styles.paginationRight}>
-              {page < lastPageNumber && <Button
+              {shouldShowNextButton && <Button
                   title="Next"
                   onPress={nextPage}
                 />}
@@ -133,7 +143,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
           keyExtractor={(item) => item.imdbID}
           extraData={filteredMoviesArray}
         />
-        {pagination()}
+        {!!filteredMoviesArray.length && pagination()}
       </SafeAreaView>
   );
 }

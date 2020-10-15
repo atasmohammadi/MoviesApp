@@ -9,6 +9,7 @@ import { filterMoviesList } from './helpers';
 import type { Movie, HomeScreenPropsType } from './types';
 import * as actions from './actions';
 import styles from './styles';
+import { itemPerPage } from '../../constants';
 
 import {
   makeSelectLoading,
@@ -25,6 +26,14 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   const [searchQuery, updateSearchQuery] = React.useState('');
   const [page, updatePage] = React.useState(1);
 
+  const moviesArray = Object.values(movies)
+  const filteredMoviesArray = filterMoviesList(moviesArray, searchQuery, page);
+  const lastPageNumber = Math.ceil(count / itemPerPage);
+  const fetchedPages = moviesArray.reduce((arr, itm) => {
+    if(!arr.includes(itm.page)) arr.push(itm.page);
+    return arr;
+  }, []);
+
   // Load movies when component mounts
   // React.useEffect(() => {
   //   loadMovies();
@@ -39,15 +48,10 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
 
   // Re-load movies when page number changes
   React.useEffect(() => {
-    if (!searchQuery) return;
+    if (!searchQuery || fetchedPages.includes(page)) return;
     loadMovies(searchQuery.toLowerCase(), page);
   }, [page]);
-
-  const moviesArray = Object.values(movies)
-  const filteredMoviesArray = filterMoviesList(moviesArray, searchQuery, page);
-  const itemPerPage = 10;
-  const lastPageNumber = Math.ceil(count / itemPerPage);
-
+  
   function previousPage() {
     if(page > 1) updatePage(page - 1);
   }

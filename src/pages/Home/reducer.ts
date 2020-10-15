@@ -42,6 +42,7 @@ const homeReducer = (state = initialState, action) =>
         draft.list = shouldAppend ? Object.assign({}, state.list, movies) : movies;
         draft.count = action.payload.count;
         draft.success = true;
+        draft.query = action.payload.query;
         draft.loading = false;
         draft.error = false;
         break;

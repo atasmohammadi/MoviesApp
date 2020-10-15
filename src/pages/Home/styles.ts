@@ -59,14 +59,16 @@ const styles = StyleSheet.create({
   },
   paginationContainer: {
     position: 'absolute',
+    width: '97%',
+    height: 55,
     bottom: 0,
     left: 0,
     padding: 8,
     marginVertical: 8,
-    marginHorizontal: 8,
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   paginationLeft: {
     flex: 1,

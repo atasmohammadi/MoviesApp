@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, FlatList, View, Text, Image } from 'react-native';
+import { SafeAreaView, FlatList, View, Text, Image, Button } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -33,7 +33,8 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   // Re-load movies when search query changes
   React.useEffect(() => {
     if (!searchQuery || searchQuery.length < 3) return;
-    loadMovies(searchQuery.toLowerCase(), page);
+    updatePage(1);
+    loadMovies(searchQuery.toLowerCase(), 1);
   }, [searchQuery]);
 
   // Re-load movies when page number changes
@@ -47,8 +48,12 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   const itemPerPage = 10;
   const lastPageNumber = Math.ceil(count / itemPerPage);
 
+  function previousPage() {
+    if(page > 1) updatePage(page - 1);
+  }
+  
   function nextPage() {
-    updatePage(page + 1);
+    if(page < lastPageNumber) updatePage(page + 1);
   }
 
   // Render list item ( movie )
@@ -88,25 +93,30 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   }
 
   function pagination() {
-    if(!searchQuery || searchQuery.length < 3) return;
+    if(!searchQuery || searchQuery.length < 3) return <View style={styles.paginationContainer} />;
     return (
       <View style={styles.paginationContainer}>
             <View style={styles.paginationLeft}>
-              {page > 1 && <Text style={styles.error}>Previous</Text>}
+              {page > 1 && <Button
+                  title="Previous"
+                  onPress={previousPage}
+                />}
             </View>
             <View style={styles.paginationCurrent}>
-              <Text style={styles.error}>{page}</Text>
+              <Text style={styles.currentPage}>{page}</Text>
             </View>
             <View style={styles.paginationRight}>
-              {page < lastPageNumber && <Text style={styles.error}>Next</Text>}
+              {page < lastPageNumber && <Button
+                  title="Next"
+                  onPress={nextPage}
+                />}
             </View>
         </View>
     );
   }
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
         <SearchBar
           placeholder="Search by title..."
           onChangeText={updateSearchQuery}
@@ -121,7 +131,6 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
         />
         {pagination()}
       </SafeAreaView>
-    </>
   );
 }
 

@@ -15,6 +15,7 @@ export const initialState = {
   list: {},
   count: 0,
   error: false,
+  query: '',
   success: false,
   loading: false,
 };
@@ -35,7 +36,10 @@ const homeReducer = (state = initialState, action) =>
           obj[item.imdbID] = item;
           return obj;
         }, {});
-        draft.list = Object.assign({}, state.list, movies);
+        // only append the new results to the old ones, if the search queries
+        // are the same. otherwise remove the old data
+        const shouldAppend = state.query === action.payload.query;
+        draft.list = shouldAppend ? Object.assign({}, state.list, movies) : movies;
         draft.count = action.payload.count;
         draft.success = true;
         draft.loading = false;

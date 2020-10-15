@@ -30,7 +30,7 @@ function* loadMovies({
             return i;
           })
         : [];
-    yield put(loadMoviesSuccess(results, totalResults));
+    yield put(loadMoviesSuccess(results, totalResults, query));
   } catch (error) {
     yield put(loadMoviesFailed(error));
   }

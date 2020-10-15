@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    position: 'relative',
   },
   item: {
     flex: 1,
@@ -51,24 +52,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'red'
   },
+  currentPage: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'blue'
+  },
   paginationContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
     padding: 8,
     marginVertical: 8,
     marginHorizontal: 8,
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   paginationLeft: {
     flex: 1,
     alignItems: 'flex-start',
+    justifyContent: 'center',
   }, 
   paginationCurrent: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   }, 
   paginationRight: {
     flex: 1,
     alignItems: 'flex-end',
+    justifyContent: 'center',
   }, 
 });
 

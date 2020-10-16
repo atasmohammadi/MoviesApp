@@ -8,7 +8,10 @@ export interface Movie {
 }
 
 export interface HomeScreenPropsType {
-    loadMovies: (query?: string) => void,
+    navigation: {
+        navigate: () => void,
+    },
+    loadMovies: (query?: string, page?: number) => void,
     movies: Movie[],
     count: number,
     error: boolean,

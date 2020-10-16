@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, FlatList, View, Text, Image, Button } from 'react-native';
+import { SafeAreaView, FlatList, View, Text, Image, Button, TouchableOpacity } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -21,7 +21,7 @@ import {
 import saga from './saga';
 
 function Home(props: HomeScreenPropsType): React.ReactNode {
-  const { loadMovies, movies, error, count } = props;
+  const { loadMovies, movies, error, count, navigation } = props;
   useInjectSaga({ key: 'Home', saga });
   const [searchQuery, updateSearchQuery] = React.useState('');
   const [page, updatePage] = React.useState(1);
@@ -30,7 +30,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   const filteredMoviesArray = filterMoviesList(moviesArray, searchQuery, page);
   const lastPageNumber = Math.ceil(count / itemPerPage);
   const fetchedPages = moviesArray.reduce((arr, itm) => {
-    if(!arr.includes(itm.page)) arr.push(itm.page);
+    if (!arr.includes(itm.page)) arr.push(itm.page);
     return arr;
   }, []);
 
@@ -43,7 +43,7 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
   // following code is commented out, because there is
   // no query to fetch movies. API doesn't support listing
   // all movies. we can only search
-  
+
   // Load movies when component mounts
   // React.useEffect(() => {
   //   loadMovies();
@@ -62,19 +62,21 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
     if (!searchQuery || fetchedPages.includes(page)) return;
     loadMovies(searchQuery.toLowerCase(), page);
   }, [page]);
-  
+
   function previousPage() {
-    if(page > 1) updatePage(page - 1);
+    if (page > 1) updatePage(page - 1);
   }
-  
+
   function nextPage() {
-    if(page < lastPageNumber) updatePage(page + 1);
+    if (page < lastPageNumber) updatePage(page + 1);
   }
 
   // Render list item ( movie )
   function renderItem({ item }: { item: Movie }) {
     return (
-      <View style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Details', {
+        movie: item,
+      })}>
         <View style={styles.imageContainer}>
           {item.Poster && <Image
             style={styles.itemImage}
@@ -103,48 +105,48 @@ function Home(props: HomeScreenPropsType): React.ReactNode {
             </View>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
   function pagination() {
     return (
       <View style={styles.paginationContainer}>
-            <View style={styles.paginationLeft}>
-              {shouldShowPreviousButton && <Button
-                  title="Previous"
-                  onPress={previousPage}
-                />}
-            </View>
-            <View style={styles.paginationCurrent}>
-              <Text style={styles.currentPage}>{page}</Text>
-            </View>
-            <View style={styles.paginationRight}>
-              {shouldShowNextButton && <Button
-                  title="Next"
-                  onPress={nextPage}
-                />}
-            </View>
+        <View style={styles.paginationLeft}>
+          {shouldShowPreviousButton && <Button
+            title="Previous"
+            onPress={previousPage}
+          />}
         </View>
+        <View style={styles.paginationCurrent}>
+          <Text style={styles.currentPage}>{page}</Text>
+        </View>
+        <View style={styles.paginationRight}>
+          {shouldShowNextButton && <Button
+            title="Next"
+            onPress={nextPage}
+          />}
+        </View>
+      </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-        <SearchBar
-          placeholder="Search by title..."
-          onChangeText={updateSearchQuery}
-          value={searchQuery}
-        />
-        {/* {error && <Text style={styles.error}>Error: {error}</Text>} */}
-        <FlatList
-          data={filteredMoviesArray}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.imdbID}
-          extraData={filteredMoviesArray}
-        />
-        {!!filteredMoviesArray.length && pagination()}
-      </SafeAreaView>
+      <SearchBar
+        placeholder="Search by title..."
+        onChangeText={updateSearchQuery}
+        value={searchQuery}
+      />
+      {/* {error && <Text style={styles.error}>Error: {error}</Text>} */}
+      <FlatList
+        data={filteredMoviesArray}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.imdbID}
+        extraData={filteredMoviesArray}
+      />
+      {!!filteredMoviesArray.length && pagination()}
+    </SafeAreaView>
   );
 }
 
